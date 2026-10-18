@@ -3,23 +3,27 @@
 {% block title %}指示・発信ボード - 防災アプリ{% endblock %}
 
 {% block content %}
-<h2>発信ボード</h2>
-<p>住民向けの発信を登録・確認できます。</p>
+<header class="page-heading">
+  <p class="eyebrow">COMMUNITY UPDATES</p>
+  <h1>発信ボード</h1>
+  <p>住民向けの発信を確認できます。</p>
+</header>
 
-<!-- 発信一覧 -->
-<h3>発信一覧</h3>
-{% if instructions %}
-<table border="1" cellpadding="5">
-  <tr>
-    <th>内容</th>
-  </tr>
-  {% for inst in instructions %}
-  <tr>
-    <td>{{ inst.content }}{% if inst.shelter %}（避難先: {{ inst.shelter }}）{% endif %}</td>
-  </tr>
-  {% endfor %}
-</table>
-{% else %}
-<p>登録されている指示はありません。</p>
-{% endif %}
+<section class="panel board-panel">
+  <h2>発信一覧</h2>
+  {% if instructions %}
+    <div class="table-scroll">
+      <table class="data-table">
+        <thead><tr><th scope="col">内容</th></tr></thead>
+        <tbody>
+          {% for inst in instructions %}
+          <tr><td>{{ inst.content }}{% if inst.shelter %}<span class="shelter-tag">避難先: {{ inst.shelter }}</span>{% endif %}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p class="empty-inline">登録されている指示はありません。</p>
+  {% endif %}
+</section>
 {% endblock %}

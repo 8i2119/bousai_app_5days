@@ -1,8 +1,61 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>避難所検索</h2>
-<p>登録されている避難所を確認できます。</p>
-
-<p><a href="/all_shelters">全施設一覧</a></p>
+<header class="page-heading">
+	<p class="eyebrow">SHELTER DIRECTORY</p>
+	<h1>避難所検索</h1>
+	<p>必要に応じた避難所を検索できます。</p>
+</header>
+<section class="panel form-panel search-panel" aria-labelledby="search-title">
+	<h2 id="search-title">絞り込んで探す</h2>
+	<p class="muted-text">災害種別の安全情報が登録されている避難所を表示します。</p>
+	<form method="GET" action="{{ url_for('search_results') }}" class="form-stack">
+		<div class="form-field">
+			<label for="disaster">災害種別</label>
+			<select id="disaster" name="disaster">
+				<option value="" selected>災害種別を指定しない</option>
+				{% for value, label in disaster_types.items() %}
+					<option value="{{ value }}">{{ label }}</option>
+				{% endfor %}
+			</select>
+		</div>
+		<fieldset class="form-field condition-options">
+            <p class="muted-text">あなたに合う設備が登録されている避難所を表示します。</p>
+			<legend>設備条件</legend>
+			{% for value, label in facility_conditions.items() %}
+				<label class="checkbox-option" for="{{ value }}">
+					<input id="{{ value }}" type="checkbox" name="facility" value="{{ value }}">
+					<span>{{ label }}</span>
+				</label>
+			{% endfor %}
+		</fieldset>
+		<div class="form-field">
+			<label for="district">地区</label>
+			<select id="district" name="district">
+				<option value="">地区を指定しない</option>
+				{% for district in districts %}
+					<option value="{{ district }}">{{ district }}</option>
+				{% endfor %}
+			</select>
+			{% if districts %}
+				<p class="muted-text">地区が分からない場合は、指定せずに避難所名で検索できます。</p>
+			{% else %}
+				<p class="muted-text">地区情報はまだ登録されていません。避難所名で検索できます。</p>
+			{% endif %}
+		</div>
+		<div class="form-field">
+			<label for="keyword">避難所名</label>
+			<input id="keyword" type="search" name="keyword" placeholder="避難所名の一部を入力">
+		</div>
+		<div class="form-actions">
+			<button class="button button-primary" type="submit">検索する</button>
+			<button class="button button-secondary" type="reset">条件をクリア</button>
+		</div>
+	</form>
+</section>
+<section class="panel action-panel" aria-label="避難所一覧">
+	<h2>全施設を確認する</h2>
+	<p class="muted-text">災害種別を指定せず、登録されている避難所を一覧で確認できます。</p>
+	<a class="button button-secondary" href="{{ url_for('all_shelters') }}"><span aria-hidden="true">▤</span> 全施設一覧を見る</a>
+</section>
 {% endblock %}

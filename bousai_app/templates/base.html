@@ -4,31 +4,60 @@
   <meta charset="utf-8">
   <title>{% block title %}防災アプリ{% endblock %}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#2458a6">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-  <!-- ヘッダー -->
-  <h1>防災アプリ</h1>
+  <a class="skip-link" href="#main-content">本文へ移動</a>
+  <header class="site-header">
+    <div class="site-header-inner">
+      <a class="brand" href="/">防災アプリ</a>
+      <button class="menu-toggle" type="button" aria-label="メニューを開く" aria-expanded="false" aria-controls="site-menu" title="メニュー">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <nav class="site-menu" id="site-menu" aria-label="メインメニュー" hidden>
+      <a href="/" {% if request.endpoint == 'index' %}aria-current="page"{% endif %}>ホーム</a>
+      <a href="/shelter_search" {% if request.endpoint in ['shelter_search', 'all_shelters', 'search_results'] %}aria-current="page"{% endif %}>避難所検索</a>
+      <a href="/shelter_register" {% if request.endpoint == 'shelter_register' %}aria-current="page"{% endif %}>避難所登録</a>
+      <a href="/board" {% if request.endpoint == 'board' %}aria-current="page"{% endif %}>指示・発信ボード</a>
+      <div class="menu-account">
+        {% if session.logged_in %}
+          <span>ログイン中{% if session.username %}（{{ session.username }}）{% endif %}</span>
+          <a href="/logout">ログアウト</a>
+        {% else %}
+          <span>未ログイン</span>
+          <a href="/login" {% if request.endpoint == 'login' %}aria-current="page"{% endif %}>ログイン</a>
+        {% endif %}
+      </div>
+    </nav>
+  </header>
 
-  <!-- ナビゲーション -->
-  <nav>
-    <a href="/">ホーム</a> |
-    <a href="/shelter_search">避難所検索</a> |
-    <a href="/shelter_register">避難所登録</a> |
-    <a href="/board">指示・発信ボード</a>
-    ｜
-    {% if session.logged_in %}
-      ログイン中{% if session.username %}（{{ session.username }}）{% endif %}
-      <a href="/logout">ログアウト</a>
-    {% else %}
-      未ログイン
-      <a href="/login">ログイン</a>
-    {% endif %}
-  </nav>
-  <hr>
-
-  <main>
-    <!-- ここに子テンプレートの content が入る -->
+  <main class="page-shell" id="main-content">
     {% block content %}{% endblock %}
   </main>
+  <script>
+    const menuToggle = document.querySelector('.menu-toggle');
+    const siteMenu = document.querySelector('#site-menu');
+
+    menuToggle.addEventListener('click', function() {
+      const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
+      menuToggle.setAttribute('aria-expanded', String(!isExpanded));
+      menuToggle.setAttribute('aria-label', isExpanded ? 'メニューを開く' : 'メニューを閉じる');
+      siteMenu.hidden = isExpanded;
+    });
+
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'Escape' && !siteMenu.hidden) {
+        siteMenu.hidden = true;
+        menuToggle.setAttribute('aria-expanded', 'false');
+        menuToggle.setAttribute('aria-label', 'メニューを開く');
+        menuToggle.focus();
+      }
+    });
+  </script>
 </body>
 </html>

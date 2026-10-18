@@ -1,23 +1,25 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>避難所登録</h2>
-<p>新しい避難所情報を登録します。</p>
-
-<!-- 成功・エラーメッセージ表示 -->
-{% if success %}
-  <p>{{ message }}</p>
-{% endif %}
+<header class="page-heading">
+  <p class="eyebrow">SHELTER DIRECTORY</p>
+  <h1>避難所登録</h1>
+  <p>新しい避難所情報を登録します。</p>
+</header>
 
 {% if error %}
-  <p>{{ message }}</p>
+  <p class="notice notice-error" role="alert">{{ message }}</p>
 {% endif %}
 
-<form method="POST">
-  <p>
-    <label for="name">避難所名（必須）</label><br>
-    <input type="text" id="name" name="name">
-  </p>
-  <p><button type="submit">登録</button></p>
-</form>
+<section class="panel form-panel">
+  <form method="POST" class="form-stack">
+    <div class="form-field">
+      <label for="name">避難所名 <span class="required-mark">必須</span></label>
+      <input type="text" id="name" name="name" autocomplete="organization" required>
+    </div>
+    <div class="form-actions">
+      <button class="button button-primary" type="submit">登録する</button>
+    </div>
+  </form>
+</section>
 {% endblock %}
